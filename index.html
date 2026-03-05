@@ -307,14 +307,14 @@
             statusDiv.style.cssText = 'padding: 10px; margin-top: 10px; border-radius: 4px; font-size: 14px;';
             
             try {
-                statusDiv.textContent = 'Loading default data...';
+                statusDiv.textContent = 'Loading default data from GitHub Release...';
                 statusDiv.style.background = '#3498db';
                 statusDiv.style.color = 'white';
                 document.querySelector('.upload-section').appendChild(statusDiv);
                 
-                const response = await fetch('data_export_flat_array.json');
+                const response = await fetch('https://github.com/roha0680/Rackspace-Customer-Dashboard/releases/download/data-v1.0/data_export_flat_array.json');
                 if (!response.ok) {
-                    throw new Error('Default data file not found (HTTP ' + response.status + ')');
+                    throw new Error('Failed to load data from GitHub Release (HTTP ' + response.status + ')');
                 }
                 const text = await response.text();
                 parseJSON(text);
