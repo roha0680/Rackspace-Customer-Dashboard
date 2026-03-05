@@ -373,6 +373,22 @@
         </div>
 
         <div class="table-container">
+            <div class="pagination" style="margin-top: 0; margin-bottom: 15px;">
+                <div class="pagination-info" id="paginationInfoTop">Showing 0 of 0 records</div>
+                <div class="pagination-controls">
+                    <select class="page-size-selector" id="pageSizeTop" onchange="changePageSizeTop()">
+                        <option value="100">100 per page</option>
+                        <option value="250">250 per page</option>
+                        <option value="500">500 per page</option>
+                        <option value="1000">1000 per page</option>
+                    </select>
+                    <button onclick="goToPage(1)" id="firstPageTop">First</button>
+                    <button onclick="previousPage()" id="prevPageTop">Previous</button>
+                    <span class="pagination-info" id="pageInfoTop">Page 1 of 1</span>
+                    <button onclick="nextPage()" id="nextPageTop">Next</button>
+                    <button onclick="goToPage(totalPages)" id="lastPageTop">Last</button>
+                </div>
+            </div>
             <table id="dataTable">
                 <thead>
                     <tr>
@@ -673,15 +689,24 @@
         function updatePaginationInfo() {
             const startIndex = (currentPage - 1) * pageSize + 1;
             const endIndex = Math.min(currentPage * pageSize, filteredData.length);
+            const infoText = `Showing ${startIndex}-${endIndex} of ${filteredData.length.toLocaleString()} records`;
+            const pageText = `Page ${currentPage} of ${totalPages}`;
             
-            document.getElementById('paginationInfo').textContent = 
-                `Showing ${startIndex}-${endIndex} of ${filteredData.length.toLocaleString()} records`;
-            document.getElementById('pageInfo').textContent = `Page ${currentPage} of ${totalPages}`;
-            
+            // Update bottom pagination
+            document.getElementById('paginationInfo').textContent = infoText;
+            document.getElementById('pageInfo').textContent = pageText;
             document.getElementById('firstPage').disabled = currentPage === 1;
             document.getElementById('prevPage').disabled = currentPage === 1;
             document.getElementById('nextPage').disabled = currentPage === totalPages;
             document.getElementById('lastPage').disabled = currentPage === totalPages;
+            
+            // Update top pagination
+            document.getElementById('paginationInfoTop').textContent = infoText;
+            document.getElementById('pageInfoTop').textContent = pageText;
+            document.getElementById('firstPageTop').disabled = currentPage === 1;
+            document.getElementById('prevPageTop').disabled = currentPage === 1;
+            document.getElementById('nextPageTop').disabled = currentPage === totalPages;
+            document.getElementById('lastPageTop').disabled = currentPage === totalPages;
         }
 
         function goToPage(page) {
@@ -705,6 +730,14 @@
 
         function changePageSize() {
             pageSize = parseInt(document.getElementById('pageSize').value);
+            document.getElementById('pageSizeTop').value = pageSize; // Sync top selector
+            currentPage = 1;
+            renderTable();
+        }
+
+        function changePageSizeTop() {
+            pageSize = parseInt(document.getElementById('pageSizeTop').value);
+            document.getElementById('pageSize').value = pageSize; // Sync bottom selector
             currentPage = 1;
             renderTable();
         }
