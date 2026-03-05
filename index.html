@@ -323,7 +323,8 @@
                 statusDiv.style.color = 'white';
                 document.querySelector('.upload-section').appendChild(statusDiv);
                 
-                const response = await fetch('data_export_flat_array.json');
+                // Use jsdelivr CDN which supports Git LFS
+                const response = await fetch('https://cdn.jsdelivr.net/gh/roha0680/Rackspace-Customer-Dashboard@main/data_export_flat_array.json');
                 if (!response.ok) {
                     throw new Error('Failed to load data (HTTP ' + response.status + ')');
                 }
