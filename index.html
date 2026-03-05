@@ -596,7 +596,20 @@
             const totalDevices = filteredData.length;
             const sumMRR = filteredData.reduce((sum, row) => {
                 const mrrValue = row['Device CMRR $'];
-                const mrr = parseFloat(String(mrrValue).replace(/[^0-9.-]/g, '')) || 0;
+                if (!mrrValue) return sum;
+                
+                // Handle formats like "$5.0K", "$1.2M", "5000", "$5000.00"
+                let mrr = 0;
+                const cleanValue = String(mrrValue).replace(/[$,]/g, '').trim();
+                
+                if (cleanValue.endsWith('K')) {
+                    mrr = parseFloat(cleanValue.replace('K', '')) * 1000;
+                } else if (cleanValue.endsWith('M')) {
+                    mrr = parseFloat(cleanValue.replace('M', '')) * 1000000;
+                } else {
+                    mrr = parseFloat(cleanValue) || 0;
+                }
+                
                 return sum + mrr;
             }, 0);
 
