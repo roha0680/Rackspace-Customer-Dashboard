@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rackspace Enterprise/Commercial Customer Dashboard</title>
+    <style>
+        /* Copy all styles from index.html - keeping it identical */
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Rackspace Enterprise/Commercial Customer Dashboard</h1>
+
+        <div class="upload-section">
+            <label style="font-weight: 600; margin-bottom: 10px; display: block;">Data Source Configuration:</label>
+            
+            <div class="input-group" style="margin-bottom: 15px;">
+                <label for="dataUrl">External Data URL (GitHub Release, Google Drive, etc.):</label>
+                <input type="text" id="dataUrl" placeholder="https://github.com/USER/REPO/releases/download/v1.0/data.json" 
+                       style="width: 100%; padding: 10px; border: 1px solid #555; border-radius: 4px; background: #4a4a4a; color: #e0e0e0;">
+            </div>
+            
+            <button class="connect-button" onclick="loadFromUrl()" style="margin-right: 10px;">Load from URL</button>
+            
+            <div style="margin-top: 15px; padding-top: 15px; border-top: 1px solid #555;">
+                <label for="csvFile" style="font-weight: 600; margin-bottom: 10px; display: block;">Or Upload File Manually:</label>
+                <input type="file" id="csvFile" accept=".csv,.json" style="color: #e0e0e0;" />
+            </div>
+        </div>
+
+        <!-- Rest of the dashboard HTML remains the same -->
+        
+    </div>
+
+    <script>
+        // Add URL loading functionality
+        async function loadFromUrl() {
+            const url = document.getElementById('dataUrl').value.trim();
+            if (!url) {
+                alert('Please enter a data URL');
+                return;
+            }
+
+            const statusDiv = document.createElement('div');
+            statusDiv.style.cssText = 'padding: 10px; margin-top: 10px; border-radius: 4px; font-size: 14px;';
+            
+            try {
+                statusDiv.textContent = 'Loading data from URL...';
+                statusDiv.style.background = '#3498db';
+                statusDiv.style.color = 'white';
+                document.querySelector('.upload-section').appendChild(statusDiv);
+                
+                const response = await fetch(url);
+                if (!response.ok) {
+                    throw new Error('Failed to fetch data (HTTP ' + response.status + ')');
+                }
+                const text = await response.text();
+                parseJSON(text);
+                
+                // Save URL to localStorage for next time
+                localStorage.setItem('dataUrl', url);
+                
+                statusDiv.textContent = '✓ Data loaded successfully from URL! (' + rawData.length + ' records)';
+                statusDiv.style.background = '#2ecc71';
+                setTimeout(() => statusDiv.remove(), 3000);
+            } catch (error) {
+                statusDiv.textContent = '⚠ Error loading from URL: ' + error.message;
+                statusDiv.style.background = '#e74c3c';
+                console.error('Load from URL error:', error);
+            }
+        }
+
+        // Auto-load from saved URL on page load
+        window.addEventListener('DOMContentLoaded', function() {
+            const savedUrl = localStorage.getItem('dataUrl');
+            if (savedUrl) {
+                document.getElementById('dataUrl').value = savedUrl;
+                loadFromUrl();
+            }
+        });
+
+        // Rest of the JavaScript remains the same
+    </script>
+</body>
+</html>

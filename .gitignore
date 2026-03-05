@@ -1,0 +1,22 @@
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Temporary files
+*.tmp
+*.bak
+*.log
+
+# Large data file (use Git LFS or external hosting)
+data_export_flat_array.json
+
+# Optional: Uncomment if you don't want to track these
+# sample_data.csv

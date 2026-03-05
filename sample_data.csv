@@ -1,0 +1,11 @@
+Top Company Name,Account Name,Account Number,Device Number,Device Type,Device Make Model,device_host_name,CSM Manager,CSM,Segment,Contract Length,Contractible Flag,Contract Status,Device Status,Contract End Date,Contract Expiry Group,Device CMRR $
+Acme Corporation,Acme Corp Main,ACC001,DEV001,Server,Dell PowerEdge R740,srv-prod-01,John Smith,Jane Doe,Enterprise,36 months,Yes,Active,Online,2026-12-31,Q4 2026,5000.00
+TechStart Inc,TechStart Primary,ACC002,DEV002,Storage,NetApp FAS8200,storage-main-01,John Smith,Bob Johnson,Commercial,24 months,Yes,Active,Online,2026-06-30,Q2 2026,3500.00
+Global Systems,Global Sys East,ACC003,DEV003,Network,Cisco Nexus 9000,net-core-01,Sarah Williams,Mike Davis,Enterprise,48 months,No,Active,Online,2027-03-31,Q1 2027,7500.00
+Acme Corporation,Acme Corp DR,ACC001,DEV004,Server,HP ProLiant DL380,srv-dr-01,John Smith,Jane Doe,Enterprise,36 months,Yes,Active,Standby,2026-12-31,Q4 2026,4500.00
+DataFlow LLC,DataFlow Main,ACC004,DEV005,Compute,IBM Power System,compute-01,Sarah Williams,Alice Brown,Commercial,12 months,Yes,Expiring,Online,2026-04-30,Q2 2026,2800.00
+TechStart Inc,TechStart Backup,ACC002,DEV006,Storage,EMC Unity 500,storage-backup-01,John Smith,Bob Johnson,Commercial,24 months,Yes,Active,Online,2026-06-30,Q2 2026,2200.00
+CloudNet Services,CloudNet Primary,ACC005,DEV007,Network,Juniper EX4300,net-edge-01,Michael Chen,Tom Wilson,Enterprise,36 months,No,Active,Online,2027-01-31,Q1 2027,4200.00
+Acme Corporation,Acme Corp Test,ACC001,DEV008,Server,Dell PowerEdge R640,srv-test-01,John Smith,Jane Doe,Enterprise,36 months,Yes,Active,Maintenance,2026-12-31,Q4 2026,3800.00
+Global Systems,Global Sys West,ACC003,DEV009,Storage,Pure Storage FlashArray,storage-west-01,Sarah Williams,Mike Davis,Enterprise,48 months,Yes,Active,Online,2027-03-31,Q1 2027,6500.00
+InnovateTech,InnovateTech HQ,ACC006,DEV010,Compute,Dell EMC VxRail,compute-vx-01,Michael Chen,Lisa Garcia,Commercial,24 months,No,Expired,Offline,2025-12-31,Q4 2025,1500.00
