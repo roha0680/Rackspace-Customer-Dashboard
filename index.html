@@ -345,58 +345,6 @@
             }
         }
 
-        async function loadDefaultData() {
-            const statusDiv = document.createElement('div');
-            statusDiv.style.cssText = 'padding: 10px; margin-top: 10px; border-radius: 4px; font-size: 14px;';
-            
-            try {
-                statusDiv.textContent = 'Loading default data from GitHub Release...';
-                statusDiv.style.background = '#3498db';
-                statusDiv.style.color = 'white';
-                document.querySelector('.upload-section').appendChild(statusDiv);
-                
-                // Try multiple URLs in case one fails
-                const urls = [
-                    'https://github.com/roha0680/Rackspace-Customer-Dashboard/releases/download/data-v1.0/data_export_flat_array.json',
-                    'https://cdn.jsdelivr.net/gh/roha0680/Rackspace-Customer-Dashboard@data-v1.0/data_export_flat_array.json'
-                ];
-                
-                let response;
-                let lastError;
-                
-                for (const url of urls) {
-                    try {
-                        response = await fetch(url);
-                        if (response.ok) break;
-                    } catch (e) {
-                        lastError = e;
-                        continue;
-                    }
-                }
-                
-                if (!response || !response.ok) {
-                    throw new Error('Failed to load data from GitHub Release. Please use the manual upload option below.');
-                }
-                
-                const text = await response.text();
-                parseJSON(text);
-                
-                statusDiv.textContent = '✓ Default data loaded successfully! (' + rawData.length + ' records)';
-                statusDiv.style.background = '#2ecc71';
-                setTimeout(() => statusDiv.remove(), 3000);
-            } catch (error) {
-                // Check if it's a CORS/file protocol issue
-                if (window.location.protocol === 'file:') {
-                    statusDiv.textContent = 'ℹ Local file access blocked by browser. Auto-load will work on GitHub Pages. Please upload the file manually for now.';
-                    statusDiv.style.background = '#f39c12';
-                } else {
-                    statusDiv.textContent = '⚠ Could not load default data: ' + error.message + '. Please upload the file manually below.';
-                    statusDiv.style.background = '#e74c3c';
-                }
-                console.error('Load default data error:', error);
-            }
-        }
-
         function handleFileUpload(event) {
             const file = event.target.files[0];
             if (!file) return;
