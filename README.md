@@ -13,9 +13,7 @@ An executive-level dashboard for viewing and analyzing Rackspace Enterprise and 
 
 ## Live Demo
 
-🚀 **[View Dashboard](https://YOUR_USERNAME.github.io/rackspace-customer-dashboard/)**
-
-*(Replace YOUR_USERNAME with your GitHub username)*
+🚀 **[View Dashboard](https://roha0680.github.io/Rackspace-Customer-Dashboard/)**
 
 ## Dashboard Columns
 
