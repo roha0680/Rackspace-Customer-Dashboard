@@ -221,9 +221,17 @@
         <h1>Rackspace Enterprise/Commercial Customer Dashboard</h1>
 
         <div class="upload-section">
-            <label for="csvFile" style="font-weight: 600; margin-bottom: 10px; display: block;">Upload Customer Data (CSV or JSON):</label>
+            <h3 style="margin-bottom: 15px; color: #ff4757;">📁 Upload Customer Data</h3>
+            <p style="margin-bottom: 15px; color: #ccc;">Due to the large file size (38MB), please upload the data file manually:</p>
+            <label for="csvFile" style="font-weight: 600; margin-bottom: 10px; display: block;">Upload data_export_flat_array.json or CSV file:</label>
             <input type="file" id="csvFile" accept=".csv,.json" />
-            <button class="refresh-button" onclick="loadDefaultData()" style="margin-top: 10px;">Load Default Data</button>
+            <div style="margin-top: 15px; padding: 15px; background: #3a3a3a; border-radius: 4px; border-left: 4px solid #3498db;">
+                <strong style="color: #3498db;">💡 Tip:</strong> 
+                <span style="color: #ccc;">The data file is available in the 
+                <a href="https://github.com/roha0680/Rackspace-Customer-Dashboard/releases/tag/data-v1.0" 
+                   target="_blank" style="color: #3498db;">GitHub Release</a>. 
+                Download it and upload here.</span>
+            </div>
         </div>
 
         <div class="summary-cards">
@@ -297,11 +305,6 @@
 
         document.getElementById('csvFile').addEventListener('change', handleFileUpload);
 
-        // Auto-load default data on page load
-        window.addEventListener('DOMContentLoaded', function() {
-            loadDefaultData();
-        });
-
         async function loadDefaultData() {
             const statusDiv = document.createElement('div');
             statusDiv.style.cssText = 'padding: 10px; margin-top: 10px; border-radius: 4px; font-size: 14px;';
@@ -312,10 +315,29 @@
                 statusDiv.style.color = 'white';
                 document.querySelector('.upload-section').appendChild(statusDiv);
                 
-                const response = await fetch('https://github.com/roha0680/Rackspace-Customer-Dashboard/releases/download/data-v1.0/data_export_flat_array.json');
-                if (!response.ok) {
-                    throw new Error('Failed to load data from GitHub Release (HTTP ' + response.status + ')');
+                // Try multiple URLs in case one fails
+                const urls = [
+                    'https://github.com/roha0680/Rackspace-Customer-Dashboard/releases/download/data-v1.0/data_export_flat_array.json',
+                    'https://cdn.jsdelivr.net/gh/roha0680/Rackspace-Customer-Dashboard@data-v1.0/data_export_flat_array.json'
+                ];
+                
+                let response;
+                let lastError;
+                
+                for (const url of urls) {
+                    try {
+                        response = await fetch(url);
+                        if (response.ok) break;
+                    } catch (e) {
+                        lastError = e;
+                        continue;
+                    }
                 }
+                
+                if (!response || !response.ok) {
+                    throw new Error('Failed to load data from GitHub Release. Please use the manual upload option below.');
+                }
+                
                 const text = await response.text();
                 parseJSON(text);
                 
@@ -328,7 +350,7 @@
                     statusDiv.textContent = 'ℹ Local file access blocked by browser. Auto-load will work on GitHub Pages. Please upload the file manually for now.';
                     statusDiv.style.background = '#f39c12';
                 } else {
-                    statusDiv.textContent = '⚠ Could not load default data: ' + error.message + '. Please upload a file manually.';
+                    statusDiv.textContent = '⚠ Could not load default data: ' + error.message + '. Please upload the file manually below.';
                     statusDiv.style.background = '#e74c3c';
                 }
                 console.error('Load default data error:', error);
