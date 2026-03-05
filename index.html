@@ -340,23 +340,6 @@
     <div class="container">
         <h1>Rackspace Enterprise/Commercial Customer Dashboard</h1>
 
-        <div class="upload-section">
-            <div style="margin-bottom: 15px; padding: 15px; background: #3a3a3a; border-radius: 6px; border-left: 4px solid #2ecc71;">
-                <strong style="color: #2ecc71;">✓ Auto-Load Enabled</strong>
-                <p style="margin-top: 8px; color: #ccc; font-size: 14px;">Customer data loads automatically when you open this dashboard. No action needed!</p>
-            </div>
-            <details style="margin-top: 15px;">
-                <summary style="cursor: pointer; color: #888; font-size: 13px; padding: 10px; background: #3a3a3a; border-radius: 4px;">
-                    Advanced: Upload Different Data (Optional)
-                </summary>
-                <div style="padding: 15px; margin-top: 10px; background: #3a3a3a; border-radius: 4px;">
-                    <label for="csvFile" style="font-weight: 600; margin-bottom: 10px; display: block; color: #e0e0e0;">Upload CSV or JSON file:</label>
-                    <input type="file" id="csvFile" accept=".csv,.json" style="color: #e0e0e0;" />
-                    <p style="margin-top: 10px; color: #888; font-size: 12px;">Use this only if you want to analyze different data.</p>
-                </div>
-            </details>
-        </div>
-
         <div class="summary-cards">
             <div class="card">
                 <h3>Total Accounts</h3>
@@ -473,8 +456,6 @@
             'Contract Expiry Group'
         ];
 
-        document.getElementById('csvFile').addEventListener('change', handleFileUpload);
-
         // Auto-load default data on page load
         window.addEventListener('DOMContentLoaded', function() {
             loadDefaultData();
@@ -488,7 +469,7 @@
                 statusDiv.textContent = 'Loading customer data...';
                 statusDiv.style.background = '#3498db';
                 statusDiv.style.color = 'white';
-                document.querySelector('.upload-section').appendChild(statusDiv);
+                document.querySelector('.summary-cards').parentElement.insertBefore(statusDiv, document.querySelector('.summary-cards'));
                 
                 // Use GitHub's LFS media URL which serves the actual file content
                 const response = await fetch('https://media.githubusercontent.com/media/roha0680/Rackspace-Customer-Dashboard/main/data_export_flat_array.json');
