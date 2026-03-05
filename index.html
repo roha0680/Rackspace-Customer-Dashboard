@@ -168,6 +168,31 @@
             margin-top: 15px;
         }
 
+        .clear-filters:hover {
+            background: #ff3838;
+        }
+
+        .search-box {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #555;
+            border-radius: 6px;
+            background: #4a4a4a;
+            color: #e0e0e0;
+            font-size: 15px;
+            margin-bottom: 20px;
+            transition: border-color 0.3s;
+        }
+
+        .search-box:focus {
+            outline: none;
+            border-color: #3498db;
+        }
+
+        .search-box::placeholder {
+            color: #999;
+        }
+
         .refresh-button:hover {
             background: #2980b9;
         }
@@ -254,6 +279,11 @@
 
         <div class="filters-section">
             <h3 style="margin-bottom: 15px;">Filters</h3>
+            <input type="text" 
+                   id="globalSearch" 
+                   class="search-box" 
+                   placeholder="🔍 Search across all columns..." 
+                   onkeyup="applyGlobalSearch()">
             <div class="filters-grid" id="filtersGrid"></div>
             <button class="clear-filters" onclick="clearAllFilters()">Clear All Filters</button>
         </div>
@@ -578,19 +608,58 @@
             const checkboxes = filterGroup.querySelectorAll('input[type="checkbox"]:checked');
             filters[changedField] = Array.from(checkboxes).map(cb => cb.value);
 
-            filteredData = rawData.filter(row => {
+            // Apply column filters
+            let baseData = rawData.filter(row => {
                 return filterFields.every(field => {
                     if (filters[field].length === 0) return true;
                     return filters[field].includes(row[field]);
                 });
             });
 
+            // Apply global search on top of column filters
+            const searchTerm = document.getElementById('globalSearch').value.toLowerCase();
+            if (searchTerm) {
+                filteredData = baseData.filter(row => {
+                    return Object.values(row).some(value => {
+                        return String(value).toLowerCase().includes(searchTerm);
+                    });
+                });
+            } else {
+                filteredData = baseData;
+            }
+
+            updateDashboard();
+        }
+
+        function applyGlobalSearch() {
+            const searchTerm = document.getElementById('globalSearch').value.toLowerCase();
+            
+            // Start with data filtered by column filters
+            let baseData = rawData.filter(row => {
+                return filterFields.every(field => {
+                    if (filters[field].length === 0) return true;
+                    return filters[field].includes(row[field]);
+                });
+            });
+            
+            // Apply global search on top of column filters
+            if (searchTerm) {
+                filteredData = baseData.filter(row => {
+                    return Object.values(row).some(value => {
+                        return String(value).toLowerCase().includes(searchTerm);
+                    });
+                });
+            } else {
+                filteredData = baseData;
+            }
+            
             updateDashboard();
         }
 
         function clearAllFilters() {
             document.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
             filterFields.forEach(field => filters[field] = []);
+            document.getElementById('globalSearch').value = '';
             filteredData = [...rawData];
             updateDashboard();
         }
