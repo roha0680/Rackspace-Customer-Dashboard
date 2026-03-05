@@ -221,17 +221,9 @@
         <h1>Rackspace Enterprise/Commercial Customer Dashboard</h1>
 
         <div class="upload-section">
-            <h3 style="margin-bottom: 15px; color: #ff4757;">📁 Upload Customer Data</h3>
-            <p style="margin-bottom: 15px; color: #ccc;">Due to the large file size (38MB), please upload the data file manually:</p>
-            <label for="csvFile" style="font-weight: 600; margin-bottom: 10px; display: block;">Upload data_export_flat_array.json or CSV file:</label>
-            <input type="file" id="csvFile" accept=".csv,.json" />
-            <div style="margin-top: 15px; padding: 15px; background: #3a3a3a; border-radius: 4px; border-left: 4px solid #3498db;">
-                <strong style="color: #3498db;">💡 Tip:</strong> 
-                <span style="color: #ccc;">The data file is available in the 
-                <a href="https://github.com/roha0680/Rackspace-Customer-Dashboard/releases/tag/data-v1.0" 
-                   target="_blank" style="color: #3498db;">GitHub Release</a>. 
-                Download it and upload here.</span>
-            </div>
+            <label for="csvFile" style="font-weight: 600; margin-bottom: 10px; display: block;">Upload Customer Data (CSV or JSON) - Optional:</label>
+            <input type="file" id="csvFile" accept=".csv,.json" style="color: #e0e0e0;" />
+            <p style="margin-top: 10px; color: #888; font-size: 13px;">Data loads automatically on page load. Upload a file only if you want to use different data.</p>
         </div>
 
         <div class="summary-cards">
@@ -304,6 +296,43 @@
         ];
 
         document.getElementById('csvFile').addEventListener('change', handleFileUpload);
+
+        // Auto-load default data on page load
+        window.addEventListener('DOMContentLoaded', function() {
+            loadDefaultData();
+        });
+
+        async function loadDefaultData() {
+            const statusDiv = document.createElement('div');
+            statusDiv.style.cssText = 'padding: 10px; margin-top: 10px; border-radius: 4px; font-size: 14px;';
+            
+            try {
+                statusDiv.textContent = 'Loading customer data...';
+                statusDiv.style.background = '#3498db';
+                statusDiv.style.color = 'white';
+                document.querySelector('.upload-section').appendChild(statusDiv);
+                
+                const response = await fetch('data_export_flat_array.json');
+                if (!response.ok) {
+                    throw new Error('Failed to load data (HTTP ' + response.status + ')');
+                }
+                const text = await response.text();
+                parseJSON(text);
+                
+                statusDiv.textContent = '✓ Data loaded successfully! (' + rawData.length + ' records)';
+                statusDiv.style.background = '#2ecc71';
+                setTimeout(() => statusDiv.remove(), 3000);
+            } catch (error) {
+                if (window.location.protocol === 'file:') {
+                    statusDiv.textContent = 'ℹ Local testing: Please use the local server (start-local-server.bat) or upload the file manually.';
+                    statusDiv.style.background = '#f39c12';
+                } else {
+                    statusDiv.textContent = '⚠ Could not auto-load data: ' + error.message + '. Please upload a file manually.';
+                    statusDiv.style.background = '#e74c3c';
+                }
+                console.error('Load default data error:', error);
+            }
+        }
 
         async function loadDefaultData() {
             const statusDiv = document.createElement('div');
