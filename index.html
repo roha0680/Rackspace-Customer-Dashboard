@@ -303,16 +303,35 @@
         });
 
         async function loadDefaultData() {
+            const statusDiv = document.createElement('div');
+            statusDiv.style.cssText = 'padding: 10px; margin-top: 10px; border-radius: 4px; font-size: 14px;';
+            
             try {
+                statusDiv.textContent = 'Loading default data...';
+                statusDiv.style.background = '#3498db';
+                statusDiv.style.color = 'white';
+                document.querySelector('.upload-section').appendChild(statusDiv);
+                
                 const response = await fetch('data_export_flat_array.json');
                 if (!response.ok) {
-                    console.log('Default data file not found. Please upload a file manually.');
-                    return;
+                    throw new Error('Default data file not found (HTTP ' + response.status + ')');
                 }
                 const text = await response.text();
                 parseJSON(text);
+                
+                statusDiv.textContent = '✓ Default data loaded successfully! (' + rawData.length + ' records)';
+                statusDiv.style.background = '#2ecc71';
+                setTimeout(() => statusDiv.remove(), 3000);
             } catch (error) {
-                console.log('Could not load default data:', error.message);
+                // Check if it's a CORS/file protocol issue
+                if (window.location.protocol === 'file:') {
+                    statusDiv.textContent = 'ℹ Local file access blocked by browser. Auto-load will work on GitHub Pages. Please upload the file manually for now.';
+                    statusDiv.style.background = '#f39c12';
+                } else {
+                    statusDiv.textContent = '⚠ Could not load default data: ' + error.message + '. Please upload a file manually.';
+                    statusDiv.style.background = '#e74c3c';
+                }
+                console.error('Load default data error:', error);
             }
         }
 
