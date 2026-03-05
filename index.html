@@ -280,6 +280,17 @@
         .table-container {
             overflow-x: auto;
             margin-top: 20px;
+            position: relative;
+        }
+
+        .table-scroll-wrapper {
+            overflow-x: auto;
+            overflow-y: hidden;
+            margin-bottom: 10px;
+        }
+
+        .table-scroll-content {
+            height: 1px;
         }
 
         table {
@@ -372,7 +383,7 @@
             <button class="clear-filters" onclick="clearAllFilters()">Clear All Filters</button>
         </div>
 
-        <div class="table-container">
+        <div class="table-container" id="tableContainer">
             <div class="pagination" style="margin-top: 0; margin-bottom: 15px;">
                 <div class="pagination-info" id="paginationInfoTop">Showing 0 of 0 records</div>
                 <div class="pagination-controls">
@@ -389,6 +400,12 @@
                     <button onclick="goToPage(totalPages)" id="lastPageTop">Last</button>
                 </div>
             </div>
+            
+            <!-- Top scrollbar -->
+            <div class="table-scroll-wrapper" id="topScroll">
+                <div class="table-scroll-content" id="topScrollContent"></div>
+            </div>
+            
             <table id="dataTable">
                 <thead>
                     <tr>
@@ -684,6 +701,9 @@
             tbody.appendChild(fragment);
 
             updatePaginationInfo();
+            
+            // Sync scrollbars after rendering
+            setTimeout(syncScrollbars, 100);
         }
 
         function updatePaginationInfo() {
@@ -749,6 +769,31 @@
         function hideLoading() {
             document.getElementById('loadingOverlay').classList.remove('show');
         }
+
+        // Sync horizontal scrollbars
+        function syncScrollbars() {
+            const topScroll = document.getElementById('topScroll');
+            const tableContainer = document.getElementById('tableContainer');
+            const topScrollContent = document.getElementById('topScrollContent');
+            const table = document.getElementById('dataTable');
+            
+            // Set the width of top scroll content to match table width
+            topScrollContent.style.width = table.offsetWidth + 'px';
+            
+            // Sync top scroll to table scroll
+            topScroll.addEventListener('scroll', function() {
+                tableContainer.scrollLeft = topScroll.scrollLeft;
+            });
+            
+            // Sync table scroll to top scroll
+            tableContainer.addEventListener('scroll', function() {
+                topScroll.scrollLeft = tableContainer.scrollLeft;
+            });
+        }
+
+        // Call syncScrollbars after table is rendered
+        window.addEventListener('load', syncScrollbars);
+        window.addEventListener('resize', syncScrollbars);
 
         function createFilters() {
             const filtersGrid = document.getElementById('filtersGrid');
